@@ -13,7 +13,7 @@ import {
   serverTimestamp,
 } from "firebase/firestore";
 import { useAppContext } from "@/context/AppContext";
-import { type } from "os";
+import OpenAI from "openai";
 
 const db = getFirestoreInstance();
 // ここで `db` を使用してFirebase Firestoreの操作を行います。
@@ -25,6 +25,11 @@ type Message = {
 };
 
 const Chat = () => {
+  const openai = new OpenAI({
+    apiKey: process.env.NEXT_PUBLIC_OPENAI_KEY,
+    dangerouslyAllowBrowser: true,
+  });
+
   const { selectedRoom } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
@@ -41,7 +46,6 @@ const Chat = () => {
         const unsubscribe = onSnapshot(q, (snapshot) => {
           const newMessages = snapshot.docs.map((doc) => doc.data() as Message);
           setMessages(newMessages);
-          console.log(messages);
         });
         return () => {
           unsubscribe();
@@ -61,9 +65,21 @@ const Chat = () => {
     };
 
     //メッセージをfirestoreに保存
-    const roomDocRef = doc(db, "rooms", "Pj4ztcetTWSuLwWOT3db");
+    const roomDocRef = doc(db, "rooms", selectedRoom!);
     const messageCollectionRef = collection(roomDocRef, "messages");
     await addDoc(messageCollectionRef, messageData);
+
+    //OpenAIからの返信
+    const gpt3Response = await openai.chat.completions.create({
+      messages: [{ role: "user", content: inputMessage }],
+      model: "gpt-3.5-turbo",
+    });
+    const botResponse = gpt3Response.choices[0].message.content;
+    await addDoc(messageCollectionRef, {
+      text: botResponse,
+      sender: "bot",
+      createdAt: serverTimestamp(),
+    });
   };
 
   return (
