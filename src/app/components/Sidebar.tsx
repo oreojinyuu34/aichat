@@ -24,7 +24,7 @@ const db = getFirestoreInstance();
 // ここで `db` を使用してFirebase Firestoreの操作を行います。
 
 const Sidebar = () => {
-  const { user, userId } = useAppContext();
+  const { user, userId, setSelectedRoom } = useAppContext();
 
   const [rooms, setRooms] = useState<Room[]>([]);
   useEffect(() => {
@@ -52,6 +52,10 @@ const Sidebar = () => {
     }
   }, [userId]);
 
+  const selectRoom = (roomId: string) => {
+    setSelectedRoom(roomId);
+  };
+
   return (
     <div className="bg-green-600 text-slate-100 h-full overflow-y-auto px-5 flex flex-col">
       <div className="flex-grow">
@@ -64,6 +68,7 @@ const Sidebar = () => {
             <li
               key={room.id}
               className="cursor-pointer border-b my-4 p-4 bg-cyan-600  hover:bg-cyan-400 rounded-md duration-150 "
+              onClick={() => selectRoom(room.id)}
             >
               {room.name}
             </li>
