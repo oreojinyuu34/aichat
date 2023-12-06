@@ -14,6 +14,7 @@ import {
 } from "firebase/firestore";
 import { useAppContext } from "@/context/AppContext";
 import OpenAI from "openai";
+import LoadingIcons from "react-loading-icons";
 
 const db = getFirestoreInstance();
 // ここで `db` を使用してFirebase Firestoreの操作を行います。
@@ -33,6 +34,7 @@ const Chat = () => {
   const { selectedRoom } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   //各ルームにおけるメッセージの取得
   useEffect(() => {
@@ -68,12 +70,16 @@ const Chat = () => {
     const roomDocRef = doc(db, "rooms", selectedRoom!);
     const messageCollectionRef = collection(roomDocRef, "messages");
     await addDoc(messageCollectionRef, messageData);
+    setInputMessage("");
+    setIsLoading(true);
 
     //OpenAIからの返信
     const gpt3Response = await openai.chat.completions.create({
       messages: [{ role: "user", content: inputMessage }],
       model: "gpt-3.5-turbo",
     });
+    setIsLoading(false);
+
     const botResponse = gpt3Response.choices[0].message.content;
     await addDoc(messageCollectionRef, {
       text: botResponse,
@@ -102,7 +108,7 @@ const Chat = () => {
             </div>
           </div>
 
-          // {/* <div className="text-right">
+          // /* <div className="text-right">
           //               <div className="bg-blue-300 text-xl inline-block rounded px-4 py-2 mb-2">
           //                 <p className="text-black font-medium">{message.text}</p>
           //               </div>
@@ -111,8 +117,9 @@ const Chat = () => {
           //               <div className="bg-green-300 text-xl inline-block rounded px-4 py-2 mb-2">
           //                 <p className="text-black font-medium">{message.text}</p>
           //               </div>
-          //             </div> */}
+          //             </div> */
         ))}
+        {isLoading && <LoadingIcons.SpinningCircles />}
       </div>
 
       <div className="flex-shrink-0 relative">
@@ -121,6 +128,12 @@ const Chat = () => {
           placeholder="Send a Message"
           className="border-2 rounded w-full pr-10 focus:outline-none p-4"
           onChange={(e) => setInputMessage(e.target.value)}
+          value={inputMessage}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              sendMessage();
+            }
+          }}
         />
         <button
           className="absolute inset-y-0 right-6 flex items-center hover:text-lg"
