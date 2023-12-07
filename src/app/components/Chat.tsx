@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa6";
 import { getFirestoreInstance } from "../../../lib/FirebaseConfig";
 import {
@@ -31,10 +31,12 @@ const Chat = () => {
     dangerouslyAllowBrowser: true,
   });
 
-  const { selectedRoom } = useAppContext();
+  const { selectedRoom, selectedRoomName } = useAppContext();
   const [inputMessage, setInputMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const scrollDiv = useRef<HTMLDivElement>(null);
 
   //各ルームにおけるメッセージの取得
   useEffect(() => {
@@ -56,6 +58,16 @@ const Chat = () => {
       fetchMessages();
     }
   }, [selectedRoom]);
+
+  useEffect(() => {
+    if (scrollDiv.current) {
+      const element = scrollDiv.current;
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior: "smooth",
+      });
+    }
+  }, [messages]);
 
   const sendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -90,8 +102,11 @@ const Chat = () => {
 
   return (
     <div className="bg-gray-300  text-black h-full  p-16 pt-8 flex flex-col">
-      <h1 className="text-2xl font-bold mb-8">Room1</h1>
-      <div className="flex-grow tracking-wider overflow-y-auto mb-4">
+      <h1 className="text-2xl font-bold mb-8">{selectedRoomName}</h1>
+      <div
+        className="flex-grow tracking-wider overflow-y-auto mb-4"
+        ref={scrollDiv}
+      >
         {messages.map((message, index) => (
           <div
             key={index}

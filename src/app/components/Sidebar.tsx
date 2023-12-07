@@ -30,7 +30,8 @@ const db = getFirestoreInstance();
 // ここで `db` を使用してFirebase Firestoreの操作を行います。
 
 const Sidebar = () => {
-  const { user, userId, setSelectedRoom } = useAppContext();
+  const { user, userId, setSelectedRoom, setSelectedRoomName } =
+    useAppContext();
 
   const [rooms, setRooms] = useState<Room[]>([]);
   useEffect(() => {
@@ -58,8 +59,9 @@ const Sidebar = () => {
     }
   }, [userId]);
 
-  const selectRoom = (roomId: string) => {
+  const selectRoom = (roomId: string, roomName: string) => {
     setSelectedRoom(roomId);
+    setSelectedRoomName(roomName);
   };
 
   const addNewRoom = async () => {
@@ -94,15 +96,18 @@ const Sidebar = () => {
             <li
               key={room.id}
               className="cursor-pointer border-b my-4 p-4 bg-cyan-600  hover:bg-cyan-400 rounded-md duration-150 "
-              onClick={() => selectRoom(room.id)}
+              onClick={() => selectRoom(room.id, room.name)}
             >
               {room.name}
             </li>
           ))}
         </ul>
       </div>
+      {user && (
+        <div className="mb-2 p-4 text-slate-100 text-lg">{user.email}</div>
+      )}
       <div
-        onClick={handleLogout}
+        onClick={() => handleLogout()}
         className="text-2xl cursor-pointer text-slate-100 flex justify-center items-center mb-8 rounded-md p-4 hover:bg-green-400"
       >
         <BiLogOut />
