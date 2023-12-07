@@ -1,16 +1,21 @@
 "use client";
 import {
   Timestamp,
+  addDoc,
   collection,
   doc,
   onSnapshot,
   orderBy,
   query,
+  serverTimestamp,
   where,
 } from "firebase/firestore";
 import { BiLogOut } from "react-icons/bi";
 import React, { useEffect, useState } from "react";
-import { getFirestoreInstance } from "../../../lib/FirebaseConfig";
+import {
+  getAuthInstance,
+  getFirestoreInstance,
+} from "../../../lib/FirebaseConfig";
 import { unsubscribe } from "diagnostics_channel";
 import { useAppContext } from "@/context/AppContext";
 
@@ -20,6 +25,7 @@ type Room = {
   createdAt: Timestamp;
 };
 
+const auth = getAuthInstance();
 const db = getFirestoreInstance();
 // ここで `db` を使用してFirebase Firestoreの操作を行います。
 
@@ -56,13 +62,33 @@ const Sidebar = () => {
     setSelectedRoom(roomId);
   };
 
+  const addNewRoom = async () => {
+    const roomName = prompt("ルーム名を入力してください");
+    if (roomName) {
+      const newRoomRef = collection(db, "rooms");
+      await addDoc(newRoomRef, {
+        name: roomName,
+        userID: userId,
+        createdAt: serverTimestamp(),
+      });
+    }
+  };
+
+  const handleLogout = () => {
+    auth.signOut();
+  };
+
   return (
     <div className="bg-green-600 text-slate-100 h-full overflow-y-auto px-5 flex flex-col">
       <div className="flex-grow">
-        <div className="cursor-pointer text-slate-100 flex justify-evenly font-semibold items-center border mt-2 rounded-md  hover:bg-green-400">
+        <div
+          onClick={addNewRoom}
+          className="cursor-pointer text-slate-100 flex justify-evenly font-semibold items-center border mt-2 rounded-md  hover:bg-green-400"
+        >
           <span className="p-2 text-2xl">＋</span>
           <h1 className="text-xl p-4 pl-0">New Chat</h1>
         </div>
+
         <ul>
           {rooms.map((room) => (
             <li
@@ -75,7 +101,10 @@ const Sidebar = () => {
           ))}
         </ul>
       </div>
-      <div className="text-2xl cursor-pointer text-slate-100 flex justify-center items-center mb-8 rounded-md p-4 hover:bg-green-400">
+      <div
+        onClick={handleLogout}
+        className="text-2xl cursor-pointer text-slate-100 flex justify-center items-center mb-8 rounded-md p-4 hover:bg-green-400"
+      >
         <BiLogOut />
         <span className="px-4">ログアウト</span>
       </div>

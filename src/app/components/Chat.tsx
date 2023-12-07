@@ -126,6 +126,7 @@ const Chat = () => {
         <input
           type="text"
           placeholder="Send a Message"
+          name="message" // name属性の追加
           className="border-2 rounded w-full pr-10 focus:outline-none p-4"
           onChange={(e) => setInputMessage(e.target.value)}
           value={inputMessage}
