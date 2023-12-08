@@ -35,6 +35,7 @@ const Sidebar = () => {
 
   const [rooms, setRooms] = useState<Room[]>([]);
   useEffect(() => {
+    if (!user) return;
     if (user) {
       const fetchRooms = async () => {
         const roomCollectionRef = collection(db, "rooms");
