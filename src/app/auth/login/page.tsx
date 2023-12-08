@@ -41,7 +41,7 @@ const Login = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <form
+      {/* <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-lg shadow-md w-96"
       >
@@ -71,7 +71,6 @@ const Login = () => {
             Password
           </label>
           <input
-            type="password"
             {...register("password", {
               required: "パスワードは必須です。",
               minLength: {
@@ -79,6 +78,7 @@ const Login = () => {
                 message: "6文字以上入力してください。",
               },
             })}
+            type="password"
             className="mt-1 border-2 rounded-md w-full p-2"
           />
           {errors.password && (
@@ -107,7 +107,7 @@ const Login = () => {
             新規登録ページへ
           </Link>
         </div>
-      </form>
+      </form> */}
     </div>
   );
 };

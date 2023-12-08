@@ -40,7 +40,7 @@ const Register = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <form
+      {/* <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-lg shadow-md w-96"
       >
@@ -70,7 +70,6 @@ const Register = () => {
             Password
           </label>
           <input
-            type="password"
             {...register("password", {
               required: "パスワードは必須です。",
               minLength: {
@@ -78,6 +77,7 @@ const Register = () => {
                 message: "6文字以上入力してください。",
               },
             })}
+            type="password"
             className="mt-1 border-2 rounded-md w-full p-2"
           />
           {errors.password && (
@@ -106,7 +106,7 @@ const Register = () => {
             ログインページへ
           </Link>
         </div>
-      </form>
+      </form> */}
     </div>
   );
 };
