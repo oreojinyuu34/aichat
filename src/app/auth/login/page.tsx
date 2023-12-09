@@ -1,4 +1,4 @@
-// "use client";
+"use client";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React from "react";
