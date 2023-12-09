@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 import { User, onAuthStateChanged } from "firebase/auth";
 import {
   ReactNode,

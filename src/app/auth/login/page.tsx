@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import { signInWithEmailAndPassword } from "firebase/auth";
 import React from "react";
@@ -41,7 +41,7 @@ const Login = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      {/* <form
+      <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-lg shadow-md w-96"
       >
@@ -107,7 +107,7 @@ const Login = () => {
             新規登録ページへ
           </Link>
         </div>
-      </form> */}
+      </form>
     </div>
   );
 };

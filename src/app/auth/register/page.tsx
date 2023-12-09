@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React from "react";
@@ -40,7 +40,7 @@ const Register = () => {
 
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      {/* <form
+      <form
         onSubmit={handleSubmit(onSubmit)}
         className="bg-white p-8 rounded-lg shadow-md w-96"
       >
@@ -106,7 +106,7 @@ const Register = () => {
             ログインページへ
           </Link>
         </div>
-      </form> */}
+      </form>
     </div>
   );
 };
