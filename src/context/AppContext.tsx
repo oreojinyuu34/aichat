@@ -60,7 +60,7 @@ export function AppProvider({ children }: AppProviderProps) {
     return () => {
       unsubscribe();
     };
-  }, []);
+  }, [auth, router]);
 
   return (
     <AppContext.Provider
